@@ -26,6 +26,7 @@ import { getData,postDataJson, isAuthenticated } from "@/util/apicalls";
             `/addlanguage`,inputData,
             isAuthenticated().token
           );
+          router.push("/dashboard");
       }
   return (
     <>

@@ -132,7 +132,7 @@ checkValue(data.ans.ques
 
         data.ans.ques.map((user) => (
              <div key={user.questionId}>
-
+{console.log("ajjjji"+data.ans.examId)}
             {data.ans.examId.questions.map((el, indx) => 
             {
               if(user.questionId == el._id){ 
@@ -217,6 +217,8 @@ checkValue(data.ans.ques
               
         //   }
             )}
+
+            
             </div>
         ))
     )

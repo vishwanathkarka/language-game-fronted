@@ -1,6 +1,7 @@
 import Header from "@/util/header";
 import { isAuthenticated } from "@/util/apicalls";
 import React, { useEffect, useState } from "react";
+import { getData } from "@/util/apicalls";
 import { useRouter } from "next/router";
 import Image from "next/image";
 
@@ -8,10 +9,24 @@ export default function Profile() {
   const router = useRouter();
   const [user, setUser] = useState(null);
 
+  const [points,setPoints] = useState(0)
   useEffect(() => {
     if (!isAuthenticated()) {
       router.push("/login");
     }
+    // userPoints/
+
+    const pointsCount = async() => {
+      const result = await getData(
+        `/userPoints/${ isAuthenticated().user._id}`,
+        isAuthenticated().token
+      );
+      if(result.success){
+      setPoints(result.points)
+      }
+    
+    }
+    isAuthenticated() && pointsCount()
     setUser(isAuthenticated().user);
   }, [router]);
   return (
@@ -21,7 +36,7 @@ export default function Profile() {
         <div className=" text-whitelight m-0 flex flex-col  h-[100vh]  justify-center items-center">
           <div className="bg-secoundblack px-9 py-9 rounded  w-[95vw] md:w-[80vw] ">
             <div className="flex w-[10rem] h-[3rem] m-auto  justify-center items-center mb-5 gap-2 border-b-secoundblack border-[1px] shadow-md rounded-lg bg-primarycolor ">
-          <h1 className=" text-white text-2xl text-center">{user.totalScore}</h1>
+          <h1 className=" text-white text-2xl text-center">{points}</h1>
           <p className="text-lightblack">Points</p>
           </div>
             <div className="flex flex-wrap gap-4 bg-lightblack p-3 justify-center items-center rounded-xl relative">

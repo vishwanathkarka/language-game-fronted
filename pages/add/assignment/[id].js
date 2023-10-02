@@ -4,14 +4,11 @@ import { useRouter } from "next/router";
 import { getData, postDataJson, isAuthenticated } from "@/util/apicalls";
 function Assignment() {
     const router = useRouter();
-  const [userData, setUserData] = useState({
-    title: "",
-    description: "",
-    language: router.query.id,
-    questions:[]
-  });
+  const [userData, setUserData] = useState([]
+);
   const [title,setTitle] = useState("")
   const [languagesList, setLanguagesList] = useState()
+  const [level,setLevel] = useState();
   useEffect( () => {
        
     
@@ -33,6 +30,8 @@ function Assignment() {
 
   
   }, [router]);
+
+  console.log("level"+level)
   console.log("languagesList"+JSON.stringify(languagesList))
   const [questions, setQuestions] = useState([]);
   const[description,setDescription] = useState()
@@ -54,9 +53,10 @@ let options =[]
     let questionData = {
        "que": newQuestion,
         // "que":el,
-        "options":options
+        "options":options,
+        "score":level
     }
-  
+  console.log("level"+level)
     let aa = [...questions]
     aa.push(questionData)
  setQuestions(aa)
@@ -69,19 +69,22 @@ setNewCorrectOptionIndex(0);
   
   const questionSubmit = async(el) =>{
 el.preventDefault();
-let aa = {...userData}
-aa.title = title
-aa.title = title
-console.log("title"+title)
-aa.description = description
-aa.questions.push(...questions)
+// let aa = [...userData]
+// aa.title = title
+// console.log("title"+title)
+// aa.description = description
+// aa.push(...questions)
+
 // console.log("userData"+JSON.stringify(userData))
-setUserData(aa)
+setUserData({title,description})
 console.log("userData"+JSON.stringify(userData))
 const result = await postDataJson(
-    `/addexam`,userData,
+    `/addexam`,{title:title, language:router.query.id,description:description,questions:questions},
     isAuthenticated().token
   );
+  if(result.success){
+    router.push("/dashboard");
+  }
   }
   return (
     <>
@@ -170,7 +173,24 @@ const result = await postDataJson(
           value = {newQuestion}
           onChange={(e) => setNewQuestion(e.target.value)}
         ></input>
+ <select
+          name=""
+          id=""
+          className="block w-full py-1.5 pl-7 pr-20 border-[1.5px]   border-lightblack my-2  bg-secoundblack   rounded-md  mb-6  text-white"
+          onChange={(e) => setLevel(e.target.value)}
+          
+       
+       >
+        
+        
+            <option value="1" key ={1}   >Easy </option>
+            <option value="3" key ={3}   >Median </option>
+            <option value="5" key ={5}   >Hard </option>
 
+        
+         
+       
+        </select>
         
         {/* <div className="flex gap-3 "> */}
           <div className="flex items-center flex-col justify-center gap-5">

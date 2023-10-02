@@ -10,6 +10,7 @@ function Id() {
 const router = useRouter();
   const [data, setData] = useState();
   const [inputData,setInputData] = useState()
+  const [userId ,setUserId] = useState()
   useEffect(() => {
     const List = async () => {
       const result = await getData(
@@ -19,9 +20,9 @@ const router = useRouter();
 
       setData(result);
     };
+
     List();
-
-
+setUserId(isAuthenticated().user._id)
     if (!isAuthenticated()) {
       router.push("/login");
     }
@@ -37,7 +38,7 @@ const router = useRouter();
         finalData.push({questionId:key,userAns:value})
         // console.log("key "+key+" value"+value)
     })
-
+    console.log("userId"+JSON.stringify(userId))
     console.log(finalData)
     console.log(name+" -- "+ el.target.value);
   };
@@ -46,20 +47,28 @@ const router = useRouter();
     el.preventDefault();
     console.log("Hanlde submit");
     let finalData =[];
+   
     inputData&& Object.keys(inputData).forEach((key)=>{
         const value = inputData[key];
         finalData.push({questionId:key,userAns:value})
         // console.log("key "+key+" value"+value)
     })
-    console.log(finalData)
+    console.log("userId"+userId)
     const submitAns = async () => {
         const result = await postDataJson(
-          `/adduserans`, {examId:router.query.id,ques:finalData},
+          `/adduserans`, {examId:router.query.id,user_id:userId, ques:finalData},
           isAuthenticated().token
         );
-  console.log(result);
+        console.log("result"+JSON.stringify(result))
+        const evaluate = await getData(
+            `/ans/evaluate/${result.ansUser._id}`,
+            isAuthenticated().token
+          );
+    console.log(evaluate)
+
+  console.log({examId:router.query.id,user_id:userId, ques:finalData});
   if(result.success){
-    router.push(`/ans/${result.ansUser._id}`);
+     router.push(`/ans/${result.ansUser._id}`);
   }
         // setData(result);
       };
