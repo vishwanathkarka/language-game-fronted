@@ -1,5 +1,5 @@
 {
-  "name": "college-managemnet-nextjs",
+  "name": "language-game-nextjs",
   "version": "0.1.0",
   "private": true,
   "proxy": "http://127.0.0.1:4000",
